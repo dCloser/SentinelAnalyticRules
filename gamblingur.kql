@@ -1,0 +1,4 @@
+let DomainName = _GetWatchlist('Known_Gambling_Domain') ;
+DeviceNetworkEvents
+| where RemoteUrl != ''
+| join DomainName on $left.RemoteUrl == $right.DomainName

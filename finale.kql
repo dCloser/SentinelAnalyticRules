@@ -1,0 +1,21 @@
+let gambling_domain = (externaldata(sentinel_domain: string )
+[@"https://github.com/blocklistproject/Lists/blob/master/gambling.txt"]
+with (format="txt"))
+| where sentinel_domain !startswith "#"
+| project sentinel_domain;
+abuse_domain
+| join 
+(
+DeviceNetworkEvents
+| where Timestamp > ago(1h)
+| extend Host = tostring(parse_url(RemoteUrl).Host)
+) on $left.sentinel_domain == $right.Host
+| project Timestamp,DeviceName,RemoteUrl,DeviceId,ReportId
+
+Syslog
+| where SyslogMessage contains "deny"
+| extend destinationip =  extract(@'dst=\"?([\w\.]+)\"?', 1, SyslogMessage)
+| extend destination = tosting(parse)
+| take 10
+
+
