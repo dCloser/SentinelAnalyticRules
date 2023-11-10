@@ -1,0 +1,13 @@
+Syslog
+| where SyslogMessage has_any ("threat") and SyslogMessage has_any ("file")
+| extend filepath = extract(@'filepath=\"?([\w\.]+)\"?', 0, SyslogMessage)
+| extend src = extract(@'src=\"?([\w\.]+)\"?', 1, SyslogMessage)
+| extend dst =  extract(@'dst=\"?([\w\.]+)\"?', 1, SyslogMessage)
+| extend tran_src_ip = extract(@'(sourceTranslatedAddress|tran_src_ip)=(\S+)', 2, SyslogMessage)
+| extend tran_dst_ip = extract(@'(destinationTranslatedAddress|tran_dst_ip)=(\S+)', 2, SyslogMessage)
+| extend username = extract(@'suser=(\S+)',1, SyslogMessage) 
+| extend spt = extract(@'spt=\"?(\d+)\"?', 1, SyslogMessage)
+| extend tran_src_port = extract(@'(sourceTranslatedPort|tran_src_port)=\"?(\d+)\"?', 2, SyslogMessage)
+| extend tran_dst_port = extract(@'(destinationtranslatedPort|tran_dst_port)=\"?(\d+)\"?', 2, SyslogMessage)
+| extend proto = extract(@'proto=\"?(\w+)\"?', 1, SyslogMessage)
+| extend dst_country_code = extract(@'(PANOSDestination|dst_country_code)=\"?(\w+)\"?', 2, SyslogMessage)

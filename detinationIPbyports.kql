@@ -1,0 +1,10 @@
+syslog
+| where syslog message has_any ("Traffic")
+| where TimeGenerated > ago(24h)
+| extend Dst_Port = extract(@'dst_port=\"?(\d+)\"?', 1, SyslogMessage),
+| extend Tran_Dst_IP = extract(@'(dst_trans_ip|tran_dst_ip)=(\S+)', 2, SyslogMessage),
+| summarize IP_dst = make_set(tostring(Tran_Dst_IP)) by Dst_Port
+| extend IP_extenstion = IP_dst
+
+
+

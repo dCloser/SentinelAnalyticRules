@@ -1,0 +1,6 @@
+Syslog
+| where TimeGenerated > ago(24h)
+| where SyslogMessage contains "traffic"
+| extend proto = extract(@'proto=\"?(\w+)\"?', 1, SyslogMessage)
+| summarize Numberofhits = count() by proto
+| top 10 by Numberofhits asc  

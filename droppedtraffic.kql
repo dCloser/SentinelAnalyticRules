@@ -1,0 +1,5 @@
+let threshold = 100;
+Syslog
+| where SyslogMessage has_any ("deny", "block", "reject")
+| where count_ > threshold
+| extend srcIPaddress = extract

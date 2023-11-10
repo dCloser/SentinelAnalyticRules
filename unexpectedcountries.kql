@@ -1,0 +1,2 @@
+syslog
+| where syslogmessage has_any ("traffic") and syslogmessage does not have ("us")

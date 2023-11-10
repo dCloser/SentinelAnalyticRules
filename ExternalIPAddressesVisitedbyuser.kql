@@ -1,0 +1,7 @@
+Syslog
+| where SyslogMessage contains "Traffic"
+| where TimeGenerated > ago(30d)
+| extend tran_dst_port = extract(@'(destinationtranslatedPort|tran_dst_port)=\"?(\d+)\"?', 2, SyslogMessage)
+| extend username = extract(@'suser=(\S+)',1, SyslogMessage) 
+| extend tran_dst_ip = extract(@'(destinationTranslatedAddress|tran_dst_ip)=(\S+)', 2, SyslogMessage)
+| summarize ExternalportsCount = count() by tran_dst_port , tran_dst_ip, username

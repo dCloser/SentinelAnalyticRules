@@ -1,0 +1,3 @@
+syslog
+search "<IP_Address>" in 
+| where timegenerated > ago(4h)
