@@ -1,0 +1,4 @@
+DeviceFileEvents 
+| where Timestamp > ago(1h) 
+| project FileName, FolderPath, SHA1, DeviceName, Timestamp 
+| limit 1000 

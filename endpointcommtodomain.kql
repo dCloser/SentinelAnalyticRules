@@ -1,0 +1,1 @@
+let Domain = "http://domainxxx.com"; DeviceNetworkEvents | where Timestamp > ago(7d) and RemoteUrl contains Domain | project Timestamp, DeviceName, RemotePort, RemoteUrl | top 100 by Timestamp desc 

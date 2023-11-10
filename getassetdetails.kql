@@ -1,0 +1,5 @@
+DeviceNetworkInfo
+| mv-expand IPAddresses
+| extend IPAddress = tostring(parse_json(IPAdresses).IPAddress)
+| where IPAddress== '10.0.0.100'
+| project DeviceName, NetworkAdapterType, TunnelType, MacAddress

@@ -1,0 +1,8 @@
+DeviceProcessEvents  
+| where Timestamp > ago(7d) 
+| where FileName endswith ".pdf.exe" 
+|   or FileName endswith ".doc.exe" 
+|   or FileName contains ".docx.exe" 
+|   or FileName contains ".mp3.exe" 
+| project Timestamp, DeviceName, FileName, AccountSid, AccountName, AccountDomain 
+| top 100 by Timestamp 

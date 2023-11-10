@@ -1,0 +1,5 @@
+DeviceNetworkEvents 
+| where RemoteUrl == "www.advertising.com" 
+| project Timestamp, DeviceName, ActionType, RemoteIP, RemoteUrl, InitiatingProcessFileName, InitiatingProcessCommandLine 
+
+ 
