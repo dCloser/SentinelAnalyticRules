@@ -1,13 +1,14 @@
+# Resolve Domain to IP address in a spreadsheet
+
 import csv
 import socket
 from csv import DictReader
 from csv import DictWriter
 
-# Input and output file paths (replace with your file paths)
-input_file = "C:\\Users\\FejiroCornelius\\Desktop\\gamblingblocklist.csv"
-output_file = "C:\\Users\\FejiroCornelius\\Desktop\\gamblingblocklist.csv"
+# File input
+input_file = "C:\\Users\\origami\\Desktop\\gamblingblocklist.csv"
+output_file = "C:\\Users\\origami\\Desktop\\gamblingblocklist.csv"
 
-# Function to resolve domain to IP address
 def resolve_domain_to_ip(domain):
     try:
         ip_address = socket.gethostbyname(domain)
@@ -15,7 +16,6 @@ def resolve_domain_to_ip(domain):
     except socket.error:
         return "Not Found"
 
-# Open the input and output CSV files
 with open(input_file, 'r') as csv_input, open(output_file, 'w', newline='') as csv_output:
     # Create CSV reader and writer
     csv_reader = csv.DictReader(csv_input)
@@ -24,7 +24,6 @@ with open(input_file, 'r') as csv_input, open(output_file, 'w', newline='') as c
     csv_writer = csv.DictWriter(csv_output, fieldnames=fieldnames)
    
 
-    # Process each row in the input CSV
     for row in csv_reader:
         domain = row['DomainName']  # Replace 'Domain' with your column name
         ip_address = resolve_domain_to_ip(domain)
