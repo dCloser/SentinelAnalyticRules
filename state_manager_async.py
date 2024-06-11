@@ -1,3 +1,10 @@
+// The given PowerShell script is written in Python and utilizes the Azure Storage File Share API to store state information for a function app using asynchronous I/O operations (aio).
+// This script helps to perform health checks on specified function applications, and to confirm persistence on asychronus tasks within Azure Storage Service
+
+
+
+Purpose: This class StateManagerAsync provides an interface allowing functions: - To write marker text indicating their current status - And read back that data when needed
+
 from azure.storage.fileshare.aio import ShareClient
 from azure.storage.fileshare.aio import ShareFileClient
 from azure.core.exceptions import ResourceNotFoundError, ResourceExistsError
