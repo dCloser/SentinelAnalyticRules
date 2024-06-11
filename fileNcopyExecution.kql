@@ -14,23 +14,3 @@ DeviceNetworkEvents
 
 
 
-C:\Users\FejiroCornelius\Downloads\Kgolden
-
-
-@title= can be anything
-@impact= More than 1 person cannot work, More than 1 person are inconvenienced, 1 person cannot work, 1 person inconvenienced
-@priority= Low, Medium, High
-@user affected= FirstName LastName
-@category= see attached Visio file above
-Each category has to follow this format:
-First tier::second tier::third tier
-@summary= can be anything
-
-""Passwordreset""
-"MFALocked"
-@title=
-@impact=
-@priority=
-@user affected=
-@category=
-@summary=
