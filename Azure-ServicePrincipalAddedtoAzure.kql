@@ -1,6 +1,6 @@
 //Detect when an Azure AD service principal is given access to an Azure RBAC scope, i.e contributor to a subscription or resource group
 
-//Data connector required for this query - Azure Activity 
+//Useful for Lateral movement, privilege escalation
 
 AzureActivity
 | where OperationNameValue == "MICROSOFT.AUTHORIZATION/ROLEASSIGNMENTS/WRITE"
