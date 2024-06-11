@@ -3,7 +3,7 @@ Welcome to the fejShell Sentinel Custom Queries repository! This repository cont
 Introduction
 Azure Sentinel is a scalable, cloud-native solution that provides security information event management (SIEM) and security orchestration automated response (SOAR). This repository enhances your threat-hunting capabilities by providing custom KQL queries tailored for various threat scenarios.
 Clone or download this repository:
-git clone https://github.com/yourusername/Azure-Sentinel-CustomQueries.git
+git clone [https://github.com/yourusername/Azure-Sentinel-CustomQueries.git](https://github.com/dCloser/FejiSentinelAnalyticRules.git)
 2.For each query file (.kql), follow these steps:
 
 Open the Log Analytics workspace associated with your Azure sentinel.
