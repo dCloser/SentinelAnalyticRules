@@ -1,0 +1,7 @@
+// This query looks for specific client applications, example, tor, quickassist, meek.
+DeviceNetworkEvents  
+| where Timestamp < ago(3d) and InitiatingProcessFileName in~ ("tor.exe", "meek-client.exe", "quickassist.exe")
+| summarize MachineCount=dcount(DeviceName), MachineNames=makeset(DeviceName, 5) by InitiatingProcessMD5
+| order by MachineCount desc
+
+// SOC can block using hash files from output
