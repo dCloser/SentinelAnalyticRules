@@ -1,3 +1,4 @@
+// Check the health of Sentinel Async connection to Azure Storage Account. This is useful for troubleshooting data/log ingestion issues
 import datetime
 import logging
 import json
