@@ -1,7 +1,6 @@
 //Detect when a resource lock is added or removed from an Azure resource
 
-//Data connector required for this query - Azure Activity 
-
+//Useful for investigating data exfiltration using storage accounts, disks.
 AzureActivity
 | where OperationNameValue in ("MICROSOFT.AUTHORIZATION/LOCKS/WRITE", "MICROSOFT.AUTHORIZATION/LOCKS/DELETE")
 | where ActivityStatusValue == "Success"
