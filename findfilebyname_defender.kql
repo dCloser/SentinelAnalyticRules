@@ -1,0 +1,2 @@
+DeviceFileEvents 
+| where  FileName == 'Invoice.pdf.exe' 
