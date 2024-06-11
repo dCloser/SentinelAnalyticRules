@@ -1,17 +1,5 @@
-// This query looks for a Word document attachment, from which a link was clicked, and after which there was a browser download.
-// This query is not noisy, but most of its results are clean.
-// It can also hserve as reference for other queries on email attachments, on browser downloads or for queries that join multiple events by time.
-// Tags: #EmailAttachment, #WordLink, #BrowserDownload, #Phishing, #DedupFileCreate
-// Implementation comment #1: Matching events by time
-//      Matching the 3 different events (saving attachment, clicking on link, downloading file) is done purely by time difference - so could sometimes link together unrelated events.
-//      Doing a more exact lookup would create a much more complex query due to 
-// Implementation comment #2: Deduping DeviceFileEvents
-//      Oftentimes there are multiple DeviceFileEvents for a single file - e.g. if the file keeps being appended into before being closed.
-//      So, we query only for the last reported file state to ignore intermediate file states.
-// Explaining the underlying data:
-//     BrowserLaunchedToOpenUrl event:
-//         This query uses the BrowserLaunchedToOpenUrl event, that includes clicks on http:// or https:// links (clicks outside of browsers), or on .lnk files
-//         For this event, RemoteUrl contains the opened URL.
+// This query looks for a Word document attachment, from which a link was clicked, and after which there was a browser download. Useful for hunting phishing links
+
 let minTimeRange = ago(7d);
 let wordLinks = 
     DeviceEvents
