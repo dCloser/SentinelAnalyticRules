@@ -1,2 +1,3 @@
+// Detect threat traffic logs from syslog source, in this case, palo alto connector to sentinel using syslog (omsagent)
 Syslog
 | where SyslogMessage has 'threat'
