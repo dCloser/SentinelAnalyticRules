@@ -1,3 +1,4 @@
+// Generic, find all device file events (move, copy, delete, rename, etc) in the past 1hr, shows, filename
 DeviceFileEvents 
 | where Timestamp > ago(1h) 
 | project FileName, FolderPath, SHA1, DeviceName, Timestamp 
