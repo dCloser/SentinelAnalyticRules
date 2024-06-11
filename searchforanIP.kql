@@ -1,3 +1,4 @@
+// Search for a specific IP address in Syslog messages within the last 4hours
 syslog
 search "<IP_Address>" in 
 | where timegenerated > ago(4h)
