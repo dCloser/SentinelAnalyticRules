@@ -1,0 +1,8 @@
+// This query finds network communication to specific URL
+// Use #7 it filters RemoteUrl using has operator, which looks for a "whole term" and runs faster.
+let partialRemoteUrlToDetect = "grepublic.com"; 
+DeviceNetworkEvents  
+| where Timestamp > ago(7d)
+and RemoteUrl has partialRemoteUrlToDetect 
+| project Timestamp, DeviceName, DeviceId, ReportId
+| top 100 by Timestamp desc
