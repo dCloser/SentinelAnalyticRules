@@ -24,3 +24,12 @@ AzureAtpLdap
 | join kind=leftouter (
 MDAtpNetworkToProcess ) on DeviceNameWithoutDomain, Time 
 | where isExclude == false or isnull(isExclude)
+
+// Get-Aduser <SAMAccountName> -Properties * 
+// UserAccountControl bit, convert decimal value to HEX
+// For example, there is a regular account for which the requirement to change the password is disabled. The userAccountControl value is calculated as follows: NORMAL_ACCOUNT (512) + DONT_EXPIRE_PASSWORD (65536) = 66048
+
+
+
+// Use Install-Script -Name Get-ADUserAccountControl to get UserAccountConrol Value
+
