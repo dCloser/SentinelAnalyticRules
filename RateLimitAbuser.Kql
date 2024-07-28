@@ -1,0 +1,16 @@
+let AttackerIPs =
+BehaviorAnalytics
+| where TimeGenerated > ago(90d)
+| extend ThreatIntelIndicatorDescription = tostring(DevicesInsights.ThreatIntelIndicatorDescription)
+| where ThreatIntelIndicatorDescription contains "proxy"
+| distinct SourceIPAddress;
+MicrosoftGraphActivityLogs 
+| where TimeGenerated > ago(90d) 
+| where IPAddress has_any(AttackerIPs)
+| extend path = replace_string(replace_string(replace_regex(tostring(parse_url(RequestUri).Path), @'(\/)+','//'),'v1.0/',''),'beta/','') 
+| extend UriSegments = extract_all(@'\/([A-z2]+|\$batch)($|\/|\(|\$)',dynamic([1]),tolower(path))
+| extend OperationResource = strcat_array(UriSegments,'/')| summarize RateLimitedCount=count() by AppId, OperationResource, RequestMethod 
+| sort by RateLimitedCount desc
+
+
+#get EntraID apps causing throttling, potentially due to malicous activities
