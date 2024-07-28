@@ -1,0 +1,14 @@
+# Abusing PIM-related Application Permissions using Microsoft Graph
+# Applications assigned Azure Entra that contains priviledged role assignement, can be used add other Azure Entra ID users/apps roles within an Azure Tenant
+# This query allows a Sentinel SIEM Admin to check what roles have been assigned to users within tenant by entities within Azure Entra
+
+let GA = dynamic(['moffgideon@steepstack.com', sales@steepstack.com']);
+AuditLogs
+| where TimeGenerated > ago(1h)
+| where Category == "RoleManagement"
+| where ActivityDisplayName == "Add member to role"
+| where TargetResources Contains "Global Administrator"
+| extend InitiatingUser = tostring(TargetResources[0].userPrincipalName)
+| where not (IntiatingUser has_any (GA))
+
+
