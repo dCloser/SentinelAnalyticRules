@@ -1,0 +1,13 @@
+// Detection by Severity, this provides a timeline of vulnerabilities from first found date, this usest the tenable.io vulnerability managenment function app integration with Azure
+Tenable_IO_Vuln_CL
+| extend Severity=column_ifexists('severity_s', '')
+| where isnotempty(Severity)
+| summarize 
+    ['5 - critical'] = countif(Severity == "critical"),
+    ['4 - high'] = countif(Severity == "high"),
+    ['3 - medium'] = countif(Severity == "medium"),
+    ['2 - low'] = countif(Severity == "low"),
+    ['1 - info'] = countif(Severity == "info"),
+    count()
+  by bin(first_found_t, 1d)
+| project-away count_
