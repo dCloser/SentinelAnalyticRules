@@ -1,0 +1,580 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "54ec0a68-c93e-4cd2-97e0-e0ef1d99b402",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Time Range",
+            "type": 4,
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ]
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": {
+              "durationMs": 259200000
+            }
+          },
+          {
+            "id": "be50a584-54ef-43e6-9040-62ce92316e17",
+            "version": "KqlParameterItem/1.0",
+            "name": "severitySelector",
+            "label": "Severity",
+            "type": 2,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "Tenable_IO_Vuln_CL\r\n| extend Severity=column_ifexists('severity_s', '')\r\n| distinct Severity\r\n| sort by Severity ",
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 43200000
+            },
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "value": [
+              "critical"
+            ]
+          },
+          {
+            "id": "7654a106-4e57-48a9-b95d-caf705d940b4",
+            "version": "KqlParameterItem/1.0",
+            "name": "OperatingSystem",
+            "label": "Operating System",
+            "type": 2,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "Tenable_IO_Vuln_CL\r\n| extend AssetOperatingSystem=column_ifexists('asset_operating_system_s', '')\r\n| distinct AssetOperatingSystem\r\n",
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 43200000
+            },
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "value": [
+              "value::all"
+            ]
+          }
+        ],
+        "style": "above",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 0"
+    },
+    {
+      "type": 11,
+      "content": {
+        "version": "LinkItem/1.0",
+        "style": "tabs",
+        "links": [
+          {
+            "id": "d1003c70-ac2a-40b2-8046-aeabe4ea8da7",
+            "cellValue": "selectedTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Scan Detection",
+            "subTarget": "Detection",
+            "preText": "Scan Detection",
+            "style": "link"
+          },
+          {
+            "id": "ea7e356b-89d5-46cc-b46c-6c4b24455572",
+            "cellValue": "selectedTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Vulnerability Analysis",
+            "subTarget": "Configure",
+            "style": "link"
+          }
+        ]
+      },
+      "name": "links - 1"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Tenable_IO_Vuln_CL\r\n| extend Severity=column_ifexists('severity_s', '')\r\n| extend AssetOperatingSystem=column_ifexists('asset_operating_system_s', '')\r\n| where Severity in ({severitySelector}) or '*' in ({severitySelector})\r\n| where AssetOperatingSystem in ({OperatingSystem}) or '*' in ({OperatingSystem})\r\n| where isnotempty(Severity)\r\n| where isnotempty(AssetOperatingSystem)\r\n| summarize \r\n    ['5 - critical'] = countif(Severity == \"critical\"),\r\n    ['4 - high'] = countif(Severity == \"high\"),\r\n    ['3 - medium'] = countif(Severity == \"medium\"),\r\n    ['2 - low'] = countif(Severity == \"low\"),\r\n    ['1 - info'] = countif(Severity == \"info\"),\r\n    count()\r\n  by bin(TimeGenerated, 1d)\r\n| project-away count_",
+        "size": 0,
+        "title": "Detections by Severity Timeline",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "barchart",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "5 - Critical",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "redBright",
+                "showIcon": true
+              },
+              "numberFormat": {
+                "unit": 17,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": true,
+                  "maximumFractionDigits": 2
+                }
+              }
+            },
+            {
+              "columnMatch": "4 - High",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "redDark",
+                "showIcon": true
+              },
+              "numberFormat": {
+                "unit": 17,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": true,
+                  "maximumFractionDigits": 2
+                }
+              }
+            },
+            {
+              "columnMatch": "3 - Medium",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "orange",
+                "showIcon": true
+              },
+              "numberFormat": {
+                "unit": 17,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false,
+                  "maximumFractionDigits": 2
+                }
+              }
+            },
+            {
+              "columnMatch": "2 - Low",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "magenta",
+                "showIcon": true
+              },
+              "numberFormat": {
+                "unit": 17,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": true,
+                  "maximumFractionDigits": 2
+                }
+              }
+            },
+            {
+              "columnMatch": "1 - Info",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "blue",
+                "showIcon": true
+              },
+              "numberFormat": {
+                "unit": 17,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false,
+                  "maximumFractionDigits": 2
+                }
+              }
+            },
+            {
+              "columnMatch": "Total",
+              "formatter": 3,
+              "formatOptions": {
+                "showIcon": true
+              },
+              "numberFormat": {
+                "unit": 17,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false,
+                  "maximumFractionDigits": 2
+                }
+              }
+            }
+          ]
+        },
+        "tileSettings": {
+          "titleContent": {
+            "columnMatch": "Severity",
+            "formatter": 1,
+            "formatOptions": {
+              "showIcon": true
+            }
+          },
+          "leftContent": {
+            "columnMatch": "count_",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "hotCold",
+              "showIcon": true
+            }
+          },
+          "showBorder": false,
+          "sortOrderField": 2
+        },
+        "chartSettings": {
+          "seriesLabelSettings": [
+            {
+              "seriesName": "5 - critical",
+              "color": "redBright"
+            },
+            {
+              "seriesName": "4 - high",
+              "color": "redDark"
+            },
+            {
+              "seriesName": "3 - medium",
+              "color": "orange"
+            },
+            {
+              "seriesName": "2 - low",
+              "color": "magenta"
+            },
+            {
+              "seriesName": "1 - info",
+              "color": "lightBlue"
+            }
+          ]
+        }
+      },
+      "conditionalVisibility": {
+        "parameterName": "selectedTab",
+        "comparison": "isEqualTo",
+        "value": "Detection"
+      },
+      "name": "query - 2"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "// Detection status\r\nTenable_IO_Vuln_CL\r\n| extend Severity=column_ifexists('severity_s', '')\r\n| extend AssetOperatingSystem=column_ifexists('asset_operating_system_s', '')\r\n| where Severity in ({severitySelector}) or '*' in ({severitySelector})\r\n| where AssetOperatingSystem in ({OperatingSystem}) or '*' in ({OperatingSystem})\r\n| extend state=column_ifexists('state_s', '')\r\n| summarize count() by state\r\n\r\n",
+        "size": 0,
+        "title": "Detection Status",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "piechart"
+      },
+      "name": "query - 3"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let data = Tenable_IO_Vuln_CL\r\n| extend Severity=column_ifexists('severity_s', '')\r\n| extend IPAddress=column_ifexists('asset_ipv4_s', '')\r\n| extend AssetHostname=column_ifexists('asset_hostname_s', '')\r\n| extend AssetOperatingSystem=column_ifexists('asset_operating_system_s', '')\r\n| where Severity in ({severitySelector}) or '*' in ({severitySelector})\r\n| where AssetOperatingSystem in ({OperatingSystem}) or '*' in ({OperatingSystem})\r\n| where isnotempty(IPAddress)\r\n| where isnotempty(AssetHostname)\r\n| where isnotempty(Severity)\r\n| where isnotempty(AssetOperatingSystem)\r\n| extend state=column_ifexists('state_s', '')\r\n| where state == \"OPEN\" and Severity in (\"critical\", \"high\")\r\n| extend Sev = case(Severity == \"critical\", \"5 - critical\", Severity == \"high\", \"4 - high\", Severity == \"medium\", \"3 - medium\", Severity == \"low\", \"2 - low\", Severity == \"info\", \"1 - info\", \" \")\r\n| summarize count() by Sev, Severity, IPAddress, AssetHostname;\r\n\r\nlet topUrgent = data\r\n| where Severity == \"critical\"\r\n| top 10 by count_;\r\n\r\nlet topCritical = data\r\n| where Severity == \"high\"\r\n| top 10 by count_;\r\n\r\nunion topUrgent, topCritical\r\n| sort by Severity, count_ desc\r\n| project-away Severity\r\n| project-rename Total = count_",
+        "size": 0,
+        "title": "Top 10 Host with New Urgent/Critical Vulnerabilities",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "Sev",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "colors",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "5 - critical",
+                    "representation": "redBright",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "4 - high",
+                    "representation": "redDark",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "3 - medium",
+                    "representation": "orange",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "2 - low",
+                    "representation": "magenta",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1- info",
+                    "representation": "lightBlue",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "lightBlue",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Total",
+              "formatter": 0,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": true,
+                  "maximumFractionDigits": 2
+                }
+              }
+            }
+          ]
+        },
+        "sortBy": []
+      },
+      "name": "query - 4"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Tenable_IO_Vuln_CL\r\n| extend Severity=column_ifexists('severity_s', '')\r\n| extend AssetOperatingSystem=column_ifexists('asset_operating_system_s', '')\r\n| where isnotempty(Severity)\r\n| summarize ['5 - critical'] = countif(Severity == \"critical\"), ['4 - high'] = countif(Severity == \"high\"), ['3 - medium'] = countif(Severity == \"medium\"), ['2 - low'] = countif(Severity == \"low\"), ['1 - info'] = countif(Severity == \"info\"),  count() by AssetOperatingSystem\r\n| project-rename Total = count_\r\n| sort by Total desc \r\n| top 10 by Total",
+        "size": 0,
+        "title": "Top 10 Vulnerabilities Detected Per Severity",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "5 - critical",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "redBright"
+              },
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": true,
+                  "maximumFractionDigits": 2
+                }
+              }
+            },
+            {
+              "columnMatch": "4 - high",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "redDark"
+              },
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": true,
+                  "maximumFractionDigits": 2
+                }
+              }
+            },
+            {
+              "columnMatch": "3 - medium",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "orange"
+              },
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": true,
+                  "maximumFractionDigits": 2
+                }
+              }
+            },
+            {
+              "columnMatch": "2 - low",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "magenta"
+              },
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": true,
+                  "maximumFractionDigits": 2
+                }
+              }
+            },
+            {
+              "columnMatch": "1 - info",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "blue"
+              },
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false,
+                  "maximumFractionDigits": 2
+                }
+              }
+            }
+          ]
+        }
+      },
+      "name": "query - 5"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let data = Tenable_IO_Vuln_CL\r\n| extend Severity=column_ifexists('severity_s', '')\r\n| extend IPAddress=column_ifexists('asset_ipv4_s', '')\r\n| extend AssetHostname=column_ifexists('asset_hostname_s', '')\r\n| extend AssetOperatingSystem=column_ifexists('asset_operating_system_s', '')\r\n| extend IPAddress=column_ifexists('asset_ipv4_s', '')\r\n| where AssetOperatingSystem in ({OperatingSystem}) or '*' in ({OperatingSystem})\r\n| where Severity in ({severitySelector}) or '*' in ({severitySelector})\r\n| extend Vulnerability = tostring(plugin_bid_s)\r\n| extend Sev=case(Severity == \"critical\", \"5 - critical\", Severity == \"high\", \"4 - high\", Severity == \"medium\", \"3 - medium\", Severity == \"low\", \"2 - low\", Severity == \"info\", \"1 - info\", \" \")\r\n| summarize count() by Sev, Severity, IPAddress, AssetHostname;\r\nlet topUrgent = data \r\n| where Severity == \"critical\"\r\n| top 10 by count_;\r\nlet topCritical = data\r\n| where Severity == \"high\"\r\n| top 10 by count_;\r\nlet topSerious = data\r\n| where Severity == \"medium\"\r\n| top 10 by count_;\r\nlet topMedium = data\r\n| where Severity == \"low\"\r\n| top 10 by count_;\r\nlet topMinimal = data\r\n| where Severity == \"info\"\r\n| top 10 by count_;\r\nunion topUrgent, topCritical, topSerious, topMedium, topMinimal\r\n| project-away Sev\r\n| sort by Severity, count_ desc\r\n| project-rename Total = count_",
+        "size": 0,
+        "title": "Top 10 Detections by Host per Severity",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "Severity",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "colors",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "critical",
+                    "representation": "redBright",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "high",
+                    "representation": "redDark",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "medium",
+                    "representation": "orange",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "low",
+                    "representation": "magenta",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "info",
+                    "representation": "lightBlue",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "amethyst",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Total",
+              "formatter": 0,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "maximumFractionDigits": 2
+                }
+              }
+            }
+          ]
+        }
+      },
+      "name": "query - 6"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/88c48c10-ca0e-42d8-8e86-31ad78181310/resourcegroups/rg-hecdp-sentinel-prod-eastus2/providers/microsoft.operationalinsights/workspaces/hecdp-sentinel-security"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
